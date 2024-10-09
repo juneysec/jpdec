@@ -2,9 +2,9 @@ English | [日本語](./README.jp.md)
 
 # Overview
 
-Detecting and Decode for Japanese encoding for Go lang.
+Go 言語用の日本語エンコーディングの自動判別とデコードを行うパッケージ
 
-## Supported Encoding
+## 対応エンコーディング
 
 - Shift_JIS
 - EUC-JP
@@ -27,9 +27,9 @@ To detect encoding exactly, use follow encoding:
 
 Other encodings are not accurate, just pick the one that is more likely.
 
-## Samples
+## サンプル
 
-Decode:
+デコード:
 
 ```go
 byteArray := []byte{0x82, 0xB1, 0x82, 0xF1, 0x82, 0xC9, 0x82, 0xBF, 0x82, 0xCD}
@@ -43,7 +43,7 @@ output:
 こんにちは
 ```
 
-Detect encoding:
+エンコーディングの判別:
 
 ```
 byteArray := []byte{0x82, 0xB1, 0x82, 0xF1, 0x82, 0xC9, 0x82, 0xBF, 0x82, 0xCD}
