@@ -1,4 +1,4 @@
-English | [日本語](./README.jp.md)
+[English](.README.md) | 日本語
 
 # Overview
 
