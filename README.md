@@ -25,11 +25,11 @@ To detect encoding exactly, use follow encoding:
 - UTF-16(Little Endian containing ASCII char)
 - UTF-16(Big Endian containing ASCII char)
 
-Other encodings are not accurate, just pick the one that is more likely.
+Other encodings are not exact, and the one that is more likely to be chosen.
 
 ## Samples
 
-Decode:
+### Decode:
 
 ```go
 byteArray := []byte{0x82, 0xB1, 0x82, 0xF1, 0x82, 0xC9, 0x82, 0xBF, 0x82, 0xCD}
@@ -43,7 +43,7 @@ output:
 こんにちは
 ```
 
-Detect encoding:
+### Detect encoding:
 
 ```
 byteArray := []byte{0x82, 0xB1, 0x82, 0xF1, 0x82, 0xC9, 0x82, 0xBF, 0x82, 0xCD}

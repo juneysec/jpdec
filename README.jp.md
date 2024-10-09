@@ -16,20 +16,20 @@ Go 言語用の日本語エンコーディングの自動判別とデコード�
 - UTF-16(Big Endian)
 - UTF-16(Big Endian with BOM)
 
-To detect encoding exactly, use follow encoding:
+エンコーディングを正確に判別するには、下記のエンコーディングを使用してください：
 
 - JIS
-- UTF-8(with BOM)
-- UTF-16(with BOM)
-- UTF-16(Big Endian with BOM)
-- UTF-16(Little Endian containing ASCII char)
-- UTF-16(Big Endian containing ASCII char)
+- UTF-8(BOM 有り)
+- UTF-16(BOM 有り)
+- UTF-16(ASCII 文字を含む)
+- UTF-16(ビッグエンディアン BOM 有り)
+- UTF-16(ビッグエンディアン ASCII 文字を含む)
 
-Other encodings are not accurate, just pick the one that is more likely.
+その他のエンコーディング(Shift_JIS や EUC-JP, UTF-8 など)は、可能性の高いものが選択されます。
 
 ## サンプル
 
-デコード:
+### デコード:
 
 ```go
 byteArray := []byte{0x82, 0xB1, 0x82, 0xF1, 0x82, 0xC9, 0x82, 0xBF, 0x82, 0xCD}
@@ -43,7 +43,7 @@ output:
 こんにちは
 ```
 
-エンコーディングの判別:
+### エンコーディングの判別:
 
 ```
 byteArray := []byte{0x82, 0xB1, 0x82, 0xF1, 0x82, 0xC9, 0x82, 0xBF, 0x82, 0xCD}
