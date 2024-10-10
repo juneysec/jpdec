@@ -10,22 +10,20 @@ Go 言語用の日本語エンコーディングの自動判別とデコード�
 - EUC-JP
 - JIS(ISO-2022-JP)
 - UTF-8
-- UTF-8(with BOM)
+- UTF-8(BOM 有り)
 - UTF-16
-- UTF-16(with BOM)
-- UTF-16(Big Endian)
-- UTF-16(Big Endian with BOM)
+- UTF-16(BOM 有り)
+- UTF-16(ビッグエンディアン)
+- UTF-16(ビッグエンディアン BOM 有り)
 
 エンコーディングを正確に判別するには、下記のエンコーディングを使用してください：
 
 - JIS
 - UTF-8(BOM 有り)
 - UTF-16(BOM 有り)
-- UTF-16(ASCII 文字を含む)
 - UTF-16(ビッグエンディアン BOM 有り)
-- UTF-16(ビッグエンディアン ASCII 文字を含む)
 
-その他のエンコーディング(Shift_JIS や EUC-JP, UTF-8 など)は、可能性の高いものが選択されます。
+その他のエンコーディング(Shift_JIS や EUC-JP, BOM無しUTF)は、可能性の高いものが選択されます。
 
 ## サンプル
 

@@ -1,6 +1,9 @@
 ﻿package jpdec
 
-import "errors"
+import (
+	"errors"
+	"sort"
+)
 
 // エンコーディング
 const (
@@ -59,6 +62,9 @@ func DetectEncoding(bytes []byte) (string, error) {
 
 	mayBeJIS := true
 	mayBeAscii := true
+	mayBeUTF16 := false
+	utf16LEScore := 0
+	utf16BEScore := 0
 
 	for i := 0; i < len(bytes); i++ {
 		b1 := bytes[i]
@@ -80,18 +86,38 @@ func DetectEncoding(bytes []byte) (string, error) {
 
 		// UNICODE 判定
 		if b1 == 0x00 {
+			mayBeUTF16 = true
+			mayBeAscii = false
+			mayBeJIS = false
+
 			// 1 つ後ろの文字または前の文字が 00 ～ 7F の間にある場合は UTF-16
 			if b2 <= 0x7F || (i > 0 && bytes[i-1] <= 0x7F) {
 				if i%2 == 0 {
-					return EncodingUTF16BE, nil
+					utf16BEScore++
 				} else {
-					return EncodingUTF16LE, nil
+					utf16LEScore++
+				}
+			} else {
+				return EncodingUnknown, ErrPossiblyBinary
+			}
+		} else if b1 == 0x30 {
+			// 0x30 XX 0x30 XX が続くような形
+			if i+2 < len(bytes) && bytes[i+1] != 0x30 && bytes[i+2] == 0x30 {
+				if i%2 == 0 {
+					utf16BEScore++
+				} else {
+					utf16LEScore++
 				}
 			}
+		}
+	}
 
-			return EncodingUnknown, ErrPossiblyBinary
-		} else if b1 == 0x7F || b1 <= 0x06 || b1 == 0xFF {
-			return EncodingUnknown, ErrPossiblyBinary
+	// 0x00 を吹く場合は UTF16LE, BE を優先
+	if mayBeUTF16 {
+		if utf16LEScore > utf16BEScore {
+			return EncodingUTF16LE, nil
+		} else if utf16BEScore > utf16LEScore {
+			return EncodingUTF16BE, nil
 		}
 	}
 
@@ -105,13 +131,26 @@ func DetectEncoding(bytes []byte) (string, error) {
 	eucScore := scoreEUC(bytes)
 	utf8Score := scoreUTF8(bytes)
 
-	// 最もスコアが高いエンコーディングを返す
-	if sjisScore > 0 && sjisScore >= eucScore && sjisScore >= utf8Score {
-		return EncodingShiftJIS, nil
-	} else if eucScore > 0 && eucScore >= sjisScore && eucScore >= utf8Score {
-		return EncodingEUCJP, nil
-	} else if utf8Score > 0 && utf8Score >= sjisScore && utf8Score >= eucScore {
-		return EncodingUTF8, nil
+	scoreByencoding := map[string]int{
+		EncodingShiftJIS: sjisScore,
+		EncodingEUCJP:    eucScore,
+		EncodingUTF8:     utf8Score,
+		EncodingUTF16BE:  utf16BEScore,
+		EncodingUTF16LE:  utf16LEScore,
+	}
+
+	keys := make([]string, 0, len(scoreByencoding))
+	for k := range scoreByencoding {
+		keys = append(keys, k)
+	}
+
+	// 降順ソート
+	sort.Slice(keys, func(i, j int) bool {
+		return scoreByencoding[keys[i]] > scoreByencoding[keys[j]]
+	})
+
+	if scoreByencoding[keys[0]] > 0 {
+		return keys[0], nil
 	}
 
 	// いずれにも該当しない場合はエラーを返す

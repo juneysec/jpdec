@@ -22,8 +22,6 @@ To detect encoding exactly, use follow encoding:
 - UTF-8(with BOM)
 - UTF-16(with BOM)
 - UTF-16(Big Endian with BOM)
-- UTF-16(Little Endian containing ASCII char)
-- UTF-16(Big Endian containing ASCII char)
 
 Other encodings are not exact, and the one that is more likely to be chosen.
 
